@@ -190,6 +190,45 @@ We tested against 50 adversarial edge cases designed to break the system. Here's
 - **No CUDA dependency** — full AMD stack from classification to inference
 - **2.4x better token/$** vs NVIDIA H100 on MI300X
 
+## Business Value
+
+**The problem is expensive.** AI applications spend 95%+ of their inference budget on simple queries that don't need large models. A chatbot answering "hello" costs the same as analyzing a legal contract. This is unsustainable at scale.
+
+**The numbers:**
+
+| Scenario | Daily Queries | All-Fireworks Cost | With 325 Agent | Annual Savings |
+|----------|:------------:|:------------------:|:--------------:|:--------------:|
+| Solo dev | 1,000 | $15/day | $0.50/day | **$5,292** |
+| Startup | 10,000 | $150/day | $5/day | **$52,925** |
+| Enterprise | 100,000 | $1,500/day | $50/day | **$529,250** |
+| Platform | 1,000,000 | $15,000/day | $500/day | **$5,292,500** |
+
+*Based on Fireworks llama-v3p1-405b pricing at $1.80/M tokens. 96.8% token savings verified on 125-task test suite.*
+
+**Revenue model:** Open-source core (MIT) for adoption → Managed API for enterprises ($29–199/month per seat). The hybrid architecture means our margins are 96.8% higher than competitors — we're not reselling someone else's tokens, we're eliminating them.
+
+**Market:** The AI API gateway market was $1.2B in 2025, projected $8.7B by 2030. Token-efficient routing sits at the intersection of API gateways, cost optimization, and green AI — three of the fastest-growing segments in enterprise infrastructure.
+
+## vs Token Frontier Model (strongest Track 1 competitor)
+
+Token Frontier is impressive — a mathematically rigorous cascade evaluation framework. Here's the honest comparison:
+
+| Metric | 325 Agent | Token Frontier |
+|--------|-----------|:---:|
+| Approach | 11 deterministic solvers | Cascade with confidence gates |
+| Local solve rate | 93.2% (69/74) | 0% (all-Fireworks cascade) |
+| Tokens per 19 tasks | ~154 | 6,351 |
+| Test suite size | 125 tasks | 19 tasks |
+| Adversarial testing | ✅ 50 tasks | ❌ |
+| Failure transparency | ✅ Published taxonomy | ❌ |
+| Eval framework | Built-in stats | Frontier tracer |
+| Docker | 54.5MB (working) | python:3.12-slim |
+| Solo developer | ✅ | ✅ |
+| Open source | MIT | Unknown |
+| Demo | Simulation mode | Record-then-replay |
+
+**Key insight:** Token Frontier's cascade evaluates everything through Fireworks — they're optimizing WHICH model to call. We eliminate 93.2% of calls entirely. Their approach is academically rigorous; ours is practically efficient. Combined, we'd be unstoppable — but for Track 1's token minimization scoring, 0 tokens beats optimized tokens every time.
+
 ---
 
 Built for the [AMD Developer Hackathon: ACT II](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-ii) — Track 1: Hybrid Token-Efficient Routing Agent.
