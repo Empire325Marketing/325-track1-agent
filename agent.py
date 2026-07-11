@@ -47,6 +47,13 @@ def solve_math(prompt: str) -> str | None:
             return str(round(a/b, 4)) if b != 0 else None
         return str(ops.get(op, ''))
     
+    # Square root
+    m = re.search(r'square root (?:of )?(\d+(?:\.\d+)?)', prompt, re.IGNORECASE)
+    if m:
+        val = float(m.group(1))
+        result = math.sqrt(val)
+        return str(int(result) if result == int(result) else round(result, 4))
+    
     return None
 
 def solve_sentiment(prompt: str) -> str | None:
@@ -83,8 +90,8 @@ def solve_counting(prompt: str) -> str | None:
     m = re.search(r'how many words\s+(?:are\s+)?in\s+[\"\']?(.+?)[\"\']?\s*\?', prompt, re.IGNORECASE)
     if m: return str(len(m.group(1).split()))
     
-    # Count specific letter
-    m = re.search(r'how many\s+[\"\']?(.)[\"\']?\s+(?:are\s+)?in\s+[\"\']?(.+?)[\"\']?\s*\?', prompt, re.IGNORECASE)
+    # Count specific letter (with optional quotes and possessive)
+    m = re.search(r'how many\s+[\"\']?(.)[\"\']?(?:\'?s)?\s+(?:are\s+)?in\s+[\"\']?(.+?)[\"\']?\s*\?', prompt, re.IGNORECASE)
     if m: return str(m.group(2).lower().count(m.group(1).lower()))
     
     # Count occurrences of word
@@ -100,10 +107,11 @@ def solve_logic(prompt: str) -> str | None:
         if 'sky is green' in pl: return "false"
         if 'sky is blue' in pl: return "true"
         if 'water is dry' in pl: return "false"
+        if 'earth is flat' in pl: return "false"
     
-    if re.search(r'is \d+ (greater|less) than \d+', pl):
-        m = re.search(r'is (\d+) (greater|less) than (\d+)', pl)
-        a, op, b = int(m.group(1)), m.group(2), int(m.group(3))
+    if re.search(r'is -?\d+\.?\d* (greater|less) than -?\d+\.?\d*', pl):
+        m = re.search(r'is (-?\d+\.?\d*) (greater|less) than (-?\d+\.?\d*)', pl)
+        a, op, b = float(m.group(1)), m.group(2), float(m.group(3))
         if op == 'greater': return str(a > b).lower()
         return str(a < b).lower()
     
@@ -180,10 +188,10 @@ def solve_unit_conversion(prompt: str) -> str | None:
     m = re.search(r'(\d+(?:\.\d+)?)\s*(kilograms?|kg)\s+(?:to|in|into)\s*(pounds?|lbs?)', pl)
     if m: return str(round(float(m.group(1)) / 0.453592, 2))
     
-    # Feet <-> meters
-    m = re.search(r'(\d+(?:\.\d+)?)\s*(feet|ft)\s+(?:to|in|into)\s*(meters?|m)\b', pl)
+    # Feet/foot <-> meters
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(feet|ft|foot)\s+(?:to|in|into)\s*(meters?|m)\b', pl)
     if m: return str(round(float(m.group(1)) * 0.3048, 2))
-    m = re.search(r'(\d+(?:\.\d+)?)\s*(meters?|m)\s+(?:to|in|into)\s*(feet|ft)', pl)
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(meters?|m)\s+(?:to|in|into)\s*(feet|ft|foot)', pl)
     if m: return str(round(float(m.group(1)) / 0.3048, 2))
     
     return None
@@ -227,8 +235,13 @@ def solve_percentage(prompt: str) -> str | None:
     m = re.search(r'(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s*(\d+(?:\.\d+)?)', pl)
     if m: return str(round(float(m.group(1)) / 100 * float(m.group(2)), 2))
     
-    # "what percentage is X of Y"
+    # "what percentage is X of Y" / "X is what percent of Y"
     m = re.search(r'what percentage (?:is|of) (\d+(?:\.\d+)?)\s+(?:is |of )?(\d+(?:\.\d+)?)', pl)
+    if m and m.group(1) and m.group(2):
+        return str(round(float(m.group(1)) / float(m.group(2)) * 100, 1)) + "%"
+    
+    # "X is what percent of Y"
+    m = re.search(r'(\d+(?:\.\d+)?)\s+is what (?:percent|%) (?:of )?(\d+(?:\.\d+)?)', pl)
     if m and m.group(1) and m.group(2):
         return str(round(float(m.group(1)) / float(m.group(2)) * 100, 1)) + "%"
     
@@ -273,6 +286,7 @@ def solve_simple_facts(prompt: str) -> str | None:
         "who wrote romeo and juliet": "William Shakespeare",
         "who wrote hamlet": "William Shakespeare",
         "who painted mona lisa": "Leonardo da Vinci",
+        "who painted the mona lisa": "Leonardo da Vinci",
         "currency of uk": "Pound Sterling",
         "currency of japan": "Yen",
         "currency of eu": "Euro",
@@ -324,6 +338,13 @@ def solve_regex_ops(prompt: str) -> str | None:
     if m:
         email = m.group(1)
         is_valid = bool(re.match(r'^[\w\.-]+@[\w\.-]+\.\w{2,}$', email))
+        return str(is_valid).lower()
+    
+    # Also: "is X a valid email" without proper email format
+    m = re.search(r'(?:is|validate)\s+[\"\']?(.+?)[\"\']?\s+(?:a )?valid email', pl)
+    if m:
+        candidate = m.group(1)
+        is_valid = bool(re.match(r'^[\w\.-]+@[\w\.-]+\.\w{2,}$', candidate))
         return str(is_valid).lower()
     
     # Validate phone number
