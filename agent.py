@@ -453,27 +453,27 @@ def simulate_fireworks(prompt: str, complexity: str = "medium") -> tuple[str, in
     token_estimates = {"simple": (80, 120), "medium": (250, 500), "complex": (600, 1000)}
     est_low, est_high = token_estimates.get(complexity, (200, 400))
     
-    # Code generation
-    if any(kw in pl for kw in ['write a python', 'write a sql', 'write a function', 'code', 'implement', 'generate code']):
+    # Code generation (check first — these are unambiguous)
+    if any(kw in pl for kw in ['write a python', 'write a sql', 'write a function', 'code', 'implement']):
         if 'fibonacci' in pl:
             return ('def fibonacci(n):\n    """Return fibonacci sequence up to n."""\n    seq = [0, 1]\n    while seq[-1] + seq[-2] <= n:\n        seq.append(seq[-1] + seq[-2])\n    return seq', est_high)
         if 'sql' in pl or 'query' in pl:
             return ('SELECT c.customer_id, c.name, SUM(o.total) as total_purchases\nFROM customers c\nJOIN orders o ON c.customer_id = o.customer_id\nGROUP BY c.customer_id, c.name\nORDER BY total_purchases DESC\nLIMIT 5;', est_high)
         return (f'# Generated code for: {prompt[:60]}...\n# [Connect FIREWORKS_API_KEY for live MI300X generation]', est_high)
     
-    # Knowledge question (check BEFORE analysis to catch "explain the theory...")
-    if any(kw in pl for kw in ['what is', 'who is', 'when did', 'where is', 'why', 'explain the']):
-        if 'relativity' in pl or 'einstein' in pl:
-            return ("Einstein's theory of relativity: Special Relativity (1905) — laws of physics identical in all inertial frames, speed of light constant at 299,792,458 m/s, E=mc². General Relativity (1915) — gravity is curvature of spacetime caused by mass-energy. Predicts black holes, gravitational waves, time dilation near massive objects.", est_high)
-        return (f'Answer to: {prompt[:80]}...\n[Connect FIREWORKS_API_KEY for live MI300X knowledge retrieval]', est_high)
-    
-    # Analysis / explanation
-    if any(kw in pl for kw in ['compare', 'contrast', 'analyze', 'difference between']):
+    # Analysis / comparison (check before general knowledge — "explain", "compare", "difference")
+    if any(kw in pl for kw in ['explain', 'compare', 'contrast', 'analyze', 'difference between']):
         if 'rest' in pl and 'graphql' in pl:
             return ('REST uses fixed endpoints returning predefined data shapes. GraphQL uses a single endpoint where clients specify exact fields needed. REST over-fetches; GraphQL fetches exactly what you ask for. REST is simpler to cache; GraphQL requires more complex caching strategies.', est_high)
         if 'microservice' in pl or 'monolithic' in pl:
             return ('Monolithic: single deployable unit, simpler to develop and test initially, harder to scale. Microservices: independent services, each with own database, better scalability and team autonomy, complex orchestration overhead.', est_high)
+        if 'relativity' in pl or 'einstein' in pl:
+            return ("Einstein's theory of relativity: Special Relativity (1905) — laws of physics identical in all inertial frames, speed of light constant at 299,792,458 m/s, E=mc². General Relativity (1915) — gravity is curvature of spacetime caused by mass-energy.", est_high)
         return (f'Analysis of: {prompt[:80]}...\n[Connect FIREWORKS_API_KEY for live MI300X analysis]', est_high)
+    
+    # General knowledge
+    if any(kw in pl for kw in ['what is', 'who is', 'when did', 'where is', 'why']):
+        return (f'Answer to: {prompt[:80]}...\n[Connect FIREWORKS_API_KEY for live MI300X knowledge retrieval]', est_high)
     
     # Default
     return (f'[SIMULATED] Response for: {prompt[:100]}...\nSet FIREWORKS_API_KEY env var for AMD MI300X + ROCm 6.0 inference via Fireworks AI.\nEstimated tokens: {est_low}-{est_high} | Tier: {complexity}', est_low)
