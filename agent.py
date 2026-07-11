@@ -145,7 +145,10 @@ def solve_sentiment(prompt: str) -> str | None:
         return None
     
     if pos > 0 and neg > 0:
-        return "Mixed"
+        pos_reasons = [w for w in pos_words if w in pl]
+        neg_reasons = [w for w in neg_words if w in pl]
+        reason = f"Mixed — acknowledges both positive ({', '.join(pos_reasons[:2])}) and negative ({', '.join(neg_reasons[:2])})"
+        return reason if len(reason) < 200 else "Mixed"
     if pos > neg: return "Positive"
     if neg > pos: return "Negative"
     return "Neutral"
