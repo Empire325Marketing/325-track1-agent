@@ -1,0 +1,19 @@
+[
+  {"task_id": "math_01", "prompt": "What is 127 + 438?"},
+  {"task_id": "math_02", "prompt": "Calculate: 15 * 27 - 13"},
+  {"task_id": "math_03", "prompt": "50 divided by 7"},
+  {"task_id": "sentiment_01", "prompt": "The movie was absolutely amazing and wonderful, I loved every minute of it."},
+  {"task_id": "sentiment_02", "prompt": "This is the worst experience I've ever had. Terrible service."},
+  {"task_id": "sentiment_03", "prompt": "What is the sentiment of this review: The product arrived on time. It works as expected."},
+  {"task_id": "counting_01", "prompt": "How many characters are in 'supercalifragilisticexpialidocious'?"},
+  {"task_id": "counting_02", "prompt": "How many words are in 'the quick brown fox jumps over the lazy dog'?"},
+  {"task_id": "reverse_01", "prompt": "reverse 'stressed'"},
+  {"task_id": "palindrome_01", "prompt": "Is 'racecar' a palindrome?"},
+  {"task_id": "palindrome_02", "prompt": "Is 'hello world' a palindrome?"},
+  {"task_id": "logic_01", "prompt": "Is 47 greater than 23?"},
+  {"task_id": "logic_02", "prompt": "True or false: water is dry."},
+  {"task_id": "knowledge_01", "prompt": "What is the capital of France?"},
+  {"task_id": "knowledge_02", "prompt": "Who wrote Romeo and Juliet?"},
+  {"task_id": "code_01", "prompt": "Write a Python function to calculate the fibonacci sequence up to n."},
+  {"task_id": "analysis_01", "prompt": "Explain the difference between REST and GraphQL APIs."}
+]
