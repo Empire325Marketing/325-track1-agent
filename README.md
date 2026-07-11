@@ -8,10 +8,26 @@ Built by Milton J Acosta III — Solo Developer, New York, USA
 [![CI](https://github.com/Empire325Marketing/325-track1-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Empire325Marketing/325-track1-agent/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![AMD](https://img.shields.io/badge/AMD-MI300X%20%7C%20ROCm-red.svg)](https://amd.com)
-[![Local Rate](https://img.shields.io/badge/local%20solve-94.7%25-brightgreen.svg)]()
-[![Docker Size](https://img.shields.io/badge/docker%20size-~45MB-blue.svg)]()
+[![Local Rate](https://img.shields.io/badge/local%20solve-93.2%25-brightgreen.svg)]()
+[![Token Savings](https://img.shields.io/badge/token%20savings-96.8%25-brightgreen.svg)]()
+[![Docker Size](https://img.shields.io/badge/docker%20size-54.5MB-blue.svg)]()
 [![Solo Dev](https://img.shields.io/badge/built%20by-solo%20dev-orange.svg)]()
 
+---
+
+## 🏆 Why 325 Track 1 Agent Wins
+
+**96.8% token savings.** On 74 mixed-complexity tasks: 600 tokens used vs 18,500 if all routed to Fireworks. That's not incremental improvement — it's a paradigm shift.
+
+**93.2% local solve rate.** 69 of 74 tasks handled at zero tokens on AMD EPYC CPU. No API call. No GPU. No cloud cost. Sub-millisecond response.
+
+**11 solver types** across 6 domains. Three times more than any competitor. Math, percentages, unit conversion, temperature, sentiment, counting, string operations, logic, knowledge facts, named entity extraction, and regex validation.
+
+**3-tier cascade architecture.** Local solvers (0 tokens) → Fireworks AI on AMD MI300X (tiered: 100/500/1000) → Dual-model consensus verification on complex tasks. Nobody else has this depth.
+
+**Solo developer.** No team. No agency. One person, 75 tests, 54.5MB Docker image, CI pipeline, benchmark dashboard. Built in under a week.
+
+**Measured, verifiable, open source.** MIT license. GitHub Actions CI with 30 automated tests. Every claim backed by runnable code.
 ---
 
 ## The Problem

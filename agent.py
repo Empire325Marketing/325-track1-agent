@@ -644,6 +644,8 @@ def main():
     total_tokens = 0
     total_time = 0
     local_count = 0
+    detail_log = []
+    simulated_count = 0
     
     for task in tasks:
         r = process_task(task)
@@ -652,6 +654,20 @@ def main():
         total_time += r["time_ms"]
         if r["route"].startswith("local"):
             local_count += 1
+        if "simulated" in r.get("method", ""):
+            simulated_count += 1
+        detail_log.append({
+            "task_id": r["task_id"],
+            "route": r["route"],
+            "method": r["method"],
+            "tokens": r["tokens_used"],
+            "time_ms": r["time_ms"]
+        })
+    
+    # What it WOULD cost if ALL tasks went to Fireworks
+    all_fireworks_estimate = len(tasks) * 250  # average 250 tokens per task
+    tokens_saved = all_fireworks_estimate - total_tokens
+    savings_pct = round(tokens_saved / all_fireworks_estimate * 100, 1) if all_fireworks_estimate > 0 else 0
     
     # Write results
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -662,9 +678,12 @@ def main():
     pct_local = round(local_count / len(tasks) * 100, 1) if tasks else 0
     print(f"325 Track 1 Agent — Complete", file=sys.stderr)
     print(f"  Tasks: {len(tasks)} | Local: {local_count} ({pct_local}%) | Fireworks: {len(tasks)-local_count}", file=sys.stderr)
-    print(f"  Tokens: {total_tokens} | Time: {round(total_time,1)}ms | Avg: {round(total_time/len(tasks),1)}ms/task", file=sys.stderr)
+    print(f"  Tokens: {total_tokens} used | Est. {all_fireworks_estimate} if all-Fireworks | Saved: {tokens_saved} ({savings_pct}%)", file=sys.stderr)
+    print(f"  Time: {round(total_time,1)}ms | Avg: {round(total_time/len(tasks),1)}ms/task", file=sys.stderr)
+    if simulated_count > 0:
+        print(f"  Note: {simulated_count} tasks simulated. Set FIREWORKS_API_KEY for AMD MI300X inference.", file=sys.stderr)
     
-    # Also write stats for submission
+    # Write stats
     stats_path = Path("/output/stats.json")
     if not stats_path.parent.exists():
         stats_path = Path("stats.json")
@@ -673,10 +692,13 @@ def main():
             "total_tasks": len(tasks),
             "local_solved": local_count,
             "local_pct": pct_local,
-            "total_tokens": total_tokens,
+            "total_tokens_used": total_tokens,
+            "all_fireworks_estimate": all_fireworks_estimate,
+            "tokens_saved": tokens_saved,
+            "savings_pct": savings_pct,
             "total_time_ms": round(total_time, 1),
             "avg_time_ms": round(total_time/len(tasks), 1) if tasks else 0,
-            "tokens_saved_vs_all_fireworks": total_tokens,  # local = 0 tokens, so tokens used = tokens NOT saved
+            "simulated_tasks": simulated_count,
         }, f, indent=2)
 
 if __name__ == "__main__":
