@@ -25,7 +25,7 @@ COPY agent.py .
 COPY test_tasks.json .
 
 # Make I/O dirs
-RUN mkdir -p /input /output && chown -R agent:agent /app /input /output
+RUN mkdir -p /input /output && chmod 777 /output /input && chown -R agent:agent /app /input /output
 
 USER agent
 
