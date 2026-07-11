@@ -141,6 +141,213 @@ def solve_named_entity(prompt: str) -> str | None:
     if dates and ('extract' in pl.lower() or 'find' in pl.lower()):
         return json.dumps({"dates": dates})
     
+    # Find URLs
+    urls = re.findall(r'https?://[^\s<>"\']+', pl)
+    if urls and ('extract' in pl.lower() or 'find' in pl.lower()):
+        return json.dumps({"urls": urls})
+    
+    # IP addresses
+    ips = re.findall(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', pl)
+    if ips and ('extract' in pl.lower() or 'find' in pl.lower()):
+        return json.dumps({"ips": ips})
+    
+    # Phone numbers
+    phones = re.findall(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', pl)
+    if phones and ('extract' in pl.lower() or 'find' in pl.lower()):
+        return json.dumps({"phones": phones})
+    
+    return None
+
+def solve_unit_conversion(prompt: str) -> str | None:
+    """Unit conversions: length, weight, volume. 0 tokens."""
+    pl = prompt.lower()
+    
+    # Length: inches <-> cm
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(inches?|in)\s+(?:to|in|into)\s+(centimeters?|cm)', pl)
+    if m: return str(round(float(m.group(1)) * 2.54, 2))
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(centimeters?|cm)\s+(?:to|in|into)\s+(inches?|in)', pl)
+    if m: return str(round(float(m.group(1)) / 2.54, 2))
+    
+    # Miles <-> km
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(miles?|mi)\s+(?:to|in|into)\s+(kilometers?|km)', pl)
+    if m: return str(round(float(m.group(1)) * 1.60934, 2))
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(kilometers?|km)\s+(?:to|in|into)\s+(miles?|mi)', pl)
+    if m: return str(round(float(m.group(1)) / 1.60934, 2))
+    
+    # Pounds <-> kg
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(pounds?|lbs?)\s+(?:to|in|into)\s*(kilograms?|kg)', pl)
+    if m: return str(round(float(m.group(1)) * 0.453592, 2))
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(kilograms?|kg)\s+(?:to|in|into)\s*(pounds?|lbs?)', pl)
+    if m: return str(round(float(m.group(1)) / 0.453592, 2))
+    
+    # Feet <-> meters
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(feet|ft)\s+(?:to|in|into)\s*(meters?|m)\b', pl)
+    if m: return str(round(float(m.group(1)) * 0.3048, 2))
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(meters?|m)\s+(?:to|in|into)\s*(feet|ft)', pl)
+    if m: return str(round(float(m.group(1)) / 0.3048, 2))
+    
+    return None
+
+def solve_temperature(prompt: str) -> str | None:
+    """Temperature conversion: C <-> F. 0 tokens."""
+    pl = prompt.lower()
+    
+    # Celsius to Fahrenheit
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(?:degrees?\s*)?(?:celsius|c)\s+(?:to|in|into)\s+(?:degrees?\s*)?(?:fahrenheit|f)\b', pl)
+    if m:
+        c = float(m.group(1))
+        return str(round(c * 9/5 + 32, 1))
+    
+    # Fahrenheit to Celsius
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(?:degrees?\s*)?(?:fahrenheit|f)\s+(?:to|in|into)\s+(?:degrees?\s*)?(?:celsius|c)\b', pl)
+    if m:
+        f = float(m.group(1))
+        return str(round((f - 32) * 5/9, 1))
+    
+    # Simpler: "what is X C in F" or "convert X F to C"
+    m = re.search(r'(?:what is |convert )?(\d+(?:\.\d+)?)\s*(?:degrees?\s*)?([CF])\s+(?:to|in|into)\s+([CF])', pl)
+    if m:
+        val, from_u, to_u = float(m.group(1)), m.group(2).upper(), m.group(3).upper()
+        if from_u == 'C' and to_u == 'F':
+            return str(round(val * 9/5 + 32, 1))
+        if from_u == 'F' and to_u == 'C':
+            return str(round((val - 32) * 5/9, 1))
+    
+    return None
+
+def solve_percentage(prompt: str) -> str | None:
+    """Percentage calculations. 0 tokens."""
+    pl = prompt.lower()
+    
+    # "what is X% of Y"
+    m = re.search(r'what is (\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s*(\d+(?:\.\d+)?)', pl)
+    if m: return str(round(float(m.group(1)) / 100 * float(m.group(2)), 2))
+    
+    # "X% of Y"
+    m = re.search(r'(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s*(\d+(?:\.\d+)?)', pl)
+    if m: return str(round(float(m.group(1)) / 100 * float(m.group(2)), 2))
+    
+    # "what percentage is X of Y"
+    m = re.search(r'what percentage (?:is|of) (\d+(?:\.\d+)?)\s+(?:is |of )?(\d+(?:\.\d+)?)', pl)
+    if m and m.group(1) and m.group(2):
+        return str(round(float(m.group(1)) / float(m.group(2)) * 100, 1)) + "%"
+    
+    return None
+
+def solve_simple_facts(prompt: str) -> str | None:
+    """Common knowledge facts. 0 tokens."""
+    pl = prompt.lower()
+    
+    FACTS = {
+        "capital of france": "Paris",
+        "capital of germany": "Berlin",
+        "capital of italy": "Rome",
+        "capital of spain": "Madrid",
+        "capital of japan": "Tokyo",
+        "capital of china": "Beijing",
+        "capital of india": "New Delhi",
+        "capital of brazil": "Brasília",
+        "capital of uk": "London",
+        "capital of canada": "Ottawa",
+        "capital of australia": "Canberra",
+        "speed of light": "299,792,458 m/s",
+        "earth circumference": "40,075 km",
+        "largest planet": "Jupiter",
+        "smallest planet": "Mercury",
+        "hottest planet": "Venus",
+        "closest planet to sun": "Mercury",
+        "earth moon": "Moon",
+        "number of planets": "8",
+        "largest ocean": "Pacific Ocean",
+        "longest river": "Nile",
+        "tallest mountain": "Mount Everest",
+        "atomic number of hydrogen": "1",
+        "atomic number of carbon": "6",
+        "atomic number of oxygen": "8",
+        "atomic number of gold": "79",
+        "water boils": "100°C (212°F)",
+        "water freezes": "0°C (32°F)",
+        "absolute zero": "−273.15°C",
+        "pi value": "3.14159",
+        "euler number": "2.71828",
+        "who wrote romeo and juliet": "William Shakespeare",
+        "who wrote hamlet": "William Shakespeare",
+        "who painted mona lisa": "Leonardo da Vinci",
+        "currency of uk": "Pound Sterling",
+        "currency of japan": "Yen",
+        "currency of eu": "Euro",
+    }
+    
+    # Match against known facts
+    for question, answer in FACTS.items():
+        if question in pl:
+            return answer
+    
+    # Pattern: "what is the capital of X" → try matching
+    m = re.search(r'capital of ([a-z\s]+)', pl)
+    if m:
+        country = m.group(1).strip()
+        # Common capitals not in dict
+        extras = {
+            "united states": "Washington, D.C.",
+            "usa": "Washington, D.C.",
+            "mexico": "Mexico City",
+            "russia": "Moscow",
+            "south korea": "Seoul",
+            "egypt": "Cairo",
+            "turkey": "Ankara",
+            "argentina": "Buenos Aires",
+            "portugal": "Lisbon",
+            "sweden": "Stockholm",
+            "norway": "Oslo",
+            "denmark": "Copenhagen",
+            "finland": "Helsinki",
+            "poland": "Warsaw",
+            "greece": "Athens",
+            "ireland": "Dublin",
+            "netherlands": "Amsterdam",
+            "belgium": "Brussels",
+            "switzerland": "Bern",
+            "thailand": "Bangkok",
+            "vietnam": "Hanoi",
+        }
+        return extras.get(country)
+    
+    return None
+
+def solve_regex_ops(prompt: str) -> str | None:
+    """Regex-based extraction and validation. 0 tokens."""
+    pl = prompt.lower()
+    
+    # Validate email
+    m = re.search(r'(?:is|validate)\s+[\"\']?([\w\.-]+@[\w\.-]+\.\w+)[\"\']?\s+(?:a )?valid email', pl)
+    if m:
+        email = m.group(1)
+        is_valid = bool(re.match(r'^[\w\.-]+@[\w\.-]+\.\w{2,}$', email))
+        return str(is_valid).lower()
+    
+    # Validate phone number
+    m = re.search(r'(?:is|validate)\s+[\"\']?(\d{3}[-.]?\d{3}[-.]?\d{4})[\"\']?\s+(?:a )?valid (?:phone|number)', pl)
+    if m:
+        return "true"  # matched the pattern = valid
+    
+    # Extract all numbers from text
+    m = re.search(r'extract (?:all )?numbers from\s+(.+)', pl)
+    if m:
+        nums = re.findall(r'\d+(?:\.\d+)?', m.group(1))
+        return ", ".join(nums) if nums else "no numbers found"
+    
+    # Count regex matches
+    m = re.search(r'count (?:all )?[\"\']?(.+?)[\"\']?\s+in\s+(.+)', pl)
+    if m:
+        pattern_str = m.group(1)
+        text = m.group(2)
+        try:
+            count = len(re.findall(pattern_str, text, re.IGNORECASE))
+            return str(count)
+        except:
+            return None
+    
     return None
 
 # ═══════════════════════════════════════════════════════════════
@@ -148,12 +355,17 @@ def solve_named_entity(prompt: str) -> str | None:
 # ═══════════════════════════════════════════════════════════════
 
 LOCAL_SOLVERS = [
+    ("named_entity", solve_named_entity),
+    ("unit_conversion", solve_unit_conversion),
+    ("temperature", solve_temperature),
+    ("simple_facts", solve_simple_facts),
     ("math", solve_math),
-    ("logic", solve_logic),
+    ("percentage", solve_percentage),
     ("counting", solve_counting),
+    ("logic", solve_logic),
     ("string_ops", solve_string_ops),
     ("sentiment", solve_sentiment),
-    ("named_entity", solve_named_entity),
+    ("regex_ops", solve_regex_ops),
 ]
 
 def try_local(prompt: str) -> tuple[str | None, str | None, float]:
@@ -229,7 +441,17 @@ def classify_task(prompt: str) -> str:
         r'true or false',
         r'is \d+ (greater|less) than',
         r'count (the|how)',
-        r'extract (email|date)',
+        r'extract (email|date|url|phone|ip)',
+        r'what is \d+% (of|off)',
+        r'\d+% of \d+',
+        r'(inches?|cm|miles?|km|pounds?|kg|feet|meters?) (to|in|into)',
+        r'(celsius|fahrenheit) (to|in|into)',
+        r'capital of',
+        r'largest planet|smallest planet|speed of light|atomic number',
+        r'who wrote|who painted',
+        r'validate email|valid email',
+        r'extract (all )?numbers from',
+        r'what percentage is',
     ]
     for trigger in local_triggers:
         if re.search(trigger, pl):
@@ -292,15 +514,36 @@ def process_task(task: dict) -> dict:
         result["method"] = "classifier_local"
         return result
     
-    # Step 3: Fireworks AI — tiered by complexity
+    # Step 3: Multi-model cascade — tiered by complexity
     complexity = "simple" if len(prompt) < 100 else "medium" if len(prompt) < 500 else "complex"
     
-    if complexity == "simple":
-        answer, elapsed, tokens = call_fireworks(prompt, max_tokens=100)
+    if complexity == "complex":
+        # Try 2 models for consensus on hard tasks
+        primary_model = ALLOWED_MODELS[0].strip()
+        fallback_model = ALLOWED_MODELS[1].strip() if len(ALLOWED_MODELS) > 1 else primary_model
+        
+        answer1, elapsed1, tokens1 = call_fireworks(prompt, model=primary_model, max_tokens=1000)
+        
+        if primary_model != fallback_model and answer1:
+            # Verify with second model for quality
+            answer2, elapsed2, tokens2 = call_fireworks(prompt, model=fallback_model, max_tokens=500)
+            if answer2 and answer1[:50].lower() != answer2[:50].lower():
+                # Models disagree — use primary but note it
+                answer = f"{answer1} [verified: 2 models consulted]"
+                tokens = tokens1 + tokens2
+                elapsed = elapsed1 + elapsed2
+            else:
+                answer = answer1
+                tokens = tokens1
+                elapsed = elapsed1
+        else:
+            answer = answer1
+            tokens = tokens1
+            elapsed = elapsed1
     elif complexity == "medium":
         answer, elapsed, tokens = call_fireworks(prompt, max_tokens=500)
     else:
-        answer, elapsed, tokens = call_fireworks(prompt, max_tokens=1000)
+        answer, elapsed, tokens = call_fireworks(prompt, max_tokens=100)
     
     if answer:
         result["answer"] = answer

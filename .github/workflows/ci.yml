@@ -1,0 +1,105 @@
+# This workflow installs Python, runs the test suite, and builds Docker
+name: 325 Track 1 Agent CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Python 3.11 — Test Suite
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run test suite
+        run: |
+          python3 -c "
+          import json, sys
+          sys.path.insert(0, '.')
+          from agent import (
+              solve_math, solve_sentiment, solve_counting, solve_string_ops,
+              solve_logic, solve_named_entity, solve_unit_conversion,
+              solve_temperature, solve_percentage, solve_simple_facts,
+              solve_regex_ops, try_local, classify_task
+          )
+          passed = 0
+          failed = 0
+          def check(label, condition):
+              global passed, failed
+              if condition: passed += 1
+              else: failed += 1; print(f'FAIL: {label}')
+          
+          # Math
+          check('math:2+2', solve_math('What is 2+2?') == '4')
+          check('math:127+438', solve_math('127 + 438') == '565')
+          check('math:50/7', solve_math('50 divided by 7') == '7.1429')
+          
+          # Percentage
+          check('pct:25% of 200', solve_percentage('What is 25% of 200?') == '50.0')
+          check('pct:30/150', solve_percentage('What percentage is 30 of 150?') == '20.0%')
+          
+          # Sentiment
+          check('sent:pos', solve_sentiment('I love this amazing movie') == 'positive')
+          check('sent:neg', solve_sentiment('This is terrible awful') == 'negative')
+          
+          # Units
+          check('unit:inches', solve_unit_conversion('10 inches to cm') == '25.4')
+          check('unit:miles', solve_unit_conversion('5 miles to km') == '8.05')
+          check('unit:lbs', solve_unit_conversion('150 pounds to kg') == '68.04')
+          
+          # Temperature
+          check('temp:CtoF', solve_temperature('100 Celsius to Fahrenheit') == '212.0')
+          check('temp:FtoC', solve_temperature('32 F to C') == '0.0')
+          
+          # Facts
+          check('fact:capital', solve_simple_facts('capital of france') == 'Paris')
+          check('fact:planet', solve_simple_facts('largest planet') == 'Jupiter')
+          
+          # Counting
+          check('count:chars', solve_counting(\"How many characters are in 'hello'?\") == '5')
+          check('count:words', solve_counting(\"How many words are in 'the quick brown'?\") == '3')
+          
+          # String ops
+          check('str:reverse', solve_string_ops(\"reverse 'stressed'\") == 'desserts')
+          check('str:palindrome-true', solve_string_ops(\"Is 'racecar' a palindrome?\") == 'true')
+          check('str:palindrome-false', solve_string_ops(\"Is 'hello' a palindrome?\") == 'false')
+          
+          # Logic
+          check('logic:gt', solve_logic('Is 47 greater than 23?') == 'true')
+          check('logic:dry', solve_logic('True or false: water is dry') == 'false')
+          
+          # NER
+          emails = solve_named_entity('extract emails from a@b.com and c@d.org')
+          check('ner:emails', emails and 'a@b.com' in emails)
+          
+          # Regex
+          check('regex:numbers', solve_regex_ops('extract all numbers from price 42 and 17') == '42, 17')
+          check('regex:email-valid', solve_regex_ops(\"is 'test@example.com' a valid email\") == 'true')
+          
+          # Classifier
+          check('classify:local', classify_task('What is 2+2?') == 'local')
+          check('classify:fireworks', classify_task('Write a Python function') == 'fireworks')
+          
+          print(f'PASSED: {passed} | FAILED: {failed}')
+          sys.exit(1 if failed > 0 else 0)
+          "
+
+  docker:
+    runs-on: ubuntu-latest
+    name: Docker Build
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t 325-agent .

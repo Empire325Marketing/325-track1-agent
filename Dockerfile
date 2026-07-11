@@ -1,37 +1,30 @@
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 LABEL org.opencontainers.image.title="325 Track 1 Agent"
 LABEL org.opencontainers.image.description="Hybrid Token-Efficient Routing Agent — AMD Developer Hackathon Act II"
 LABEL org.opencontainers.image.authors="Milton J Acosta III <support@empire325marketing.com>"
 LABEL org.opencontainers.image.vendor="Empire325Marketing"
 
-# Build args
-ARG FIREWORKS_API_KEY
-ENV FIREWORKS_API_KEY=${FIREWORKS_API_KEY}
-
-# Runtime env
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV FIREWORKS_BASE_URL=https://api.fireworks.ai/inference/v1/chat/completions
 ENV ALLOWED_MODELS=accounts/fireworks/models/llama-v3p1-405b-instruct
 
-# Create non-root user
-RUN useradd --create-home --shell /bin/bash agent
+RUN adduser -D -h /app agent
 
 WORKDIR /app
-
-# Copy only what's needed
 COPY agent.py .
 COPY test_tasks.json .
 
-# Make I/O dirs
 RUN mkdir -p /input /output && chmod 777 /output /input && chown -R agent:agent /app /input /output
 
 USER agent
 
-# Test that local solvers work without API key
-RUN python3 -c "from agent import try_local; ans, name, t = try_local('What is 2+2?'); assert ans == '4', f'Math solver failed: {ans}'; print('Local solvers: OK')"
-RUN python3 -c "from agent import solve_sentiment; assert solve_sentiment('I love this') == 'positive'; print('Sentiment: OK')"
-RUN python3 -c "from agent import solve_counting; assert solve_counting(\"How many characters are in 'hello'?\") == '5'; print('Counting: OK')"
+# Verify local solvers work (no deps needed)
+RUN python3 -c "from agent import try_local; ans, name, t = try_local('What is 2+2?'); assert ans == '4', f'Failed: {ans}'; print('OK: math')"
+RUN python3 -c "from agent import solve_sentiment; assert solve_sentiment('I love this') == 'positive'; print('OK: sentiment')"
+RUN python3 -c "from agent import solve_unit_conversion; assert solve_unit_conversion('10 inches to cm') == '25.4'; print('OK: units')"
+RUN python3 -c "from agent import solve_temperature; assert solve_temperature('100 Celsius to Fahrenheit') == '212.0'; print('OK: temp')"
+RUN python3 -c "from agent import solve_simple_facts; assert solve_simple_facts('capital of france') == 'Paris'; print('OK: facts')"
 
 ENTRYPOINT ["python3", "agent.py"]
