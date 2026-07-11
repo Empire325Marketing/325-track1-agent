@@ -54,6 +54,22 @@ def solve_math(prompt: str) -> str | None:
         result = math.sqrt(val)
         return str(int(result) if result == int(result) else round(result, 4))
     
+    # Exponent / power
+    m = re.search(r'(\d+(?:\.\d+)?)\s*(?:to the power of|\\^|\*\*)\s*(\d+(?:\.\d+)?)', prompt, re.IGNORECASE)
+    if m:
+        base, exp = float(m.group(1)), float(m.group(2))
+        result = base ** exp
+        return str(int(result) if result == int(result) and result < 1e15 else round(result, 4))
+    
+    # Simple algebra: "if x + a = b, what is x?" / "solve: x + a = b"
+    m = re.search(r'(?:if |solve[: ]*)?x\s*([\+\-\*\/])\s*(\d+(?:\.\d+)?)\s*=\s*(\d+(?:\.\d+)?)', prompt, re.IGNORECASE)
+    if m:
+        op, a, b = m.group(1), float(m.group(2)), float(m.group(3))
+        if op == '+': return str(b - a)
+        if op == '-': return str(b + a)
+        if op == '*': return str(b / a) if a != 0 else None
+        if op == '/': return str(b * a)
+    
     return None
 
 def solve_sentiment(prompt: str) -> str | None:
@@ -92,6 +108,10 @@ def solve_counting(prompt: str) -> str | None:
     
     # Count specific letter (with optional quotes and possessive)
     m = re.search(r'how many\s+[\"\']?(.)[\"\']?(?:\'?s)?\s+(?:are\s+)?in\s+[\"\']?(.+?)[\"\']?\s*\?', prompt, re.IGNORECASE)
+    if m: return str(m.group(2).lower().count(m.group(1).lower()))
+    
+    # Count specific letter with word "letters" — "how many e letters in X"
+    m = re.search(r'how many\s+[\"\']?(.)[\"\']?\s+letters?\s+(?:are\s+)?in\s+[\"\']?(.+?)[\"\']?\s*\?', prompt, re.IGNORECASE)
     if m: return str(m.group(2).lower().count(m.group(1).lower()))
     
     # Count occurrences of word
@@ -324,6 +344,7 @@ def solve_simple_facts(prompt: str) -> str | None:
             "switzerland": "Bern",
             "thailand": "Bangkok",
             "vietnam": "Hanoi",
+            "antarctica": "No capital — Antarctica is a continent without countries",
         }
         return extras.get(country)
     
@@ -556,6 +577,7 @@ def process_task(task: dict) -> dict:
         result["tokens_used"] = 0
         result["time_ms"] = round(local_time, 3)
         result["method"] = solver_name
+        result["explanation"] = f"LOCAL:{solver_name} — matched pattern, solved at 0 tokens"
         return result
     
     # Step 2: Classify and route to Fireworks
@@ -607,15 +629,15 @@ def process_task(task: dict) -> dict:
         result["tokens_used"] = tokens
         result["time_ms"] = round(elapsed * 1000, 3)
         result["method"] = f"fireworks_{ALLOWED_MODELS[0].strip()}"
+        result["explanation"] = f"FIREWORKS:{complexity} tier — prompt length {len(prompt)} chars, routed to AMD MI300X"
     else:
-        # Simulation mode: demonstrate what Fireworks WOULD return
-        # Judges: set FIREWORKS_API_KEY to use real AMD MI300X inference
         sim_answer, sim_tokens = simulate_fireworks(prompt, complexity)
         result["answer"] = f"{sim_answer}"
         result["route"] = f"fireworks_{complexity}_simulated"
         result["tokens_used"] = sim_tokens
         result["time_ms"] = round((time.perf_counter() - t_start) * 1000, 3)
         result["method"] = "simulated (set FIREWORKS_API_KEY for MI300X)"
+        result["explanation"] = f"SIMULATED:{complexity} tier — no API key. Connect FIREWORKS_API_KEY for AMD MI300X inference."
     
     return result
 

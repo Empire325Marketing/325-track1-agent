@@ -1,0 +1,202 @@
+[
+  {
+    "task_id": "adv_01",
+    "prompt": ""
+  },
+  {
+    "task_id": "adv_02",
+    "prompt": "translate hello world to spanish then reverse it"
+  },
+  {
+    "task_id": "adv_03",
+    "prompt": "What is 2+2 and also explain quantum computing?"
+  },
+  {
+    "task_id": "adv_04",
+    "prompt": "Today is nice weather"
+  },
+  {
+    "task_id": "adv_05",
+    "prompt": "Write a function to sort a list, then explain why you chose that algorithm"
+  },
+  {
+    "task_id": "adv_06",
+    "prompt": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+    "task_id": "adv_07",
+    "prompt": "optimize this"
+  },
+  {
+    "task_id": "adv_08",
+    "prompt": "is -0.5 greater than -1.2"
+  },
+  {
+    "task_id": "adv_09",
+    "prompt": "3 +"
+  },
+  {
+    "task_id": "adv_10",
+    "prompt": "Is A man a plan a canal Panama a palindrome"
+  },
+  {
+    "task_id": "adv_11",
+    "prompt": "What is 3.14159 * 2.71828?"
+  },
+  {
+    "task_id": "adv_12",
+    "prompt": "Convert 98.6 Fahrenheit to Celsius and 37 Celsius to Fahrenheit"
+  },
+  {
+    "task_id": "adv_13",
+    "prompt": "extract emails from empty string"
+  },
+  {
+    "task_id": "adv_14",
+    "prompt": "What is 2 to the power of 10?"
+  },
+  {
+    "task_id": "adv_15",
+    "prompt": "Write a SQL query then write a Python function that does the same thing"
+  },
+  {
+    "task_id": "adv_16",
+    "prompt": "solve if x + 3 = 7, what is x?"
+  },
+  {
+    "task_id": "adv_17",
+    "prompt": "True or false: the earth is not flat AND the sky is not green"
+  },
+  {
+    "task_id": "adv_18",
+    "prompt": "Is this a palindrome: !@#$%^"
+  },
+  {
+    "task_id": "adv_19",
+    "prompt": "How many e letters are in elementary?"
+  },
+  {
+    "task_id": "adv_20",
+    "prompt": "What is the capital of the country whose capital is Paris?"
+  },
+  {
+    "task_id": "adv_21",
+    "prompt": "reverse racecar then check if the result is a palindrome"
+  },
+  {
+    "task_id": "adv_22",
+    "prompt": "5 feet 3 inches to meters"
+  },
+  {
+    "task_id": "adv_23",
+    "prompt": "What is -40 Celsius in Fahrenheit and what is -40 Fahrenheit in Celsius?"
+  },
+  {
+    "task_id": "adv_24",
+    "prompt": "count all vowels in the quick brown fox jumps over the lazy dog"
+  },
+  {
+    "task_id": "adv_25",
+    "prompt": "What is 10 percent of 25 percent of 200?"
+  },
+  {
+    "task_id": "adv_26",
+    "prompt": "Is the word level the same backwards and forwards?"
+  },
+  {
+    "task_id": "adv_27",
+    "prompt": "What is the atomic number of Gold and the capital of Germany?"
+  },
+  {
+    "task_id": "adv_28",
+    "prompt": "write a function to calculate 2+2 then call it with 5+5"
+  },
+  {
+    "task_id": "adv_29",
+    "prompt": "extract numbers from there are 12 apples and 3.5 oranges"
+  },
+  {
+    "task_id": "adv_30",
+    "prompt": "Convert 1 mile to km, then convert that result to meters"
+  },
+  {
+    "task_id": "adv_31",
+    "prompt": "What is the sentiment of: The acting was great but the plot was terrible?"
+  },
+  {
+    "task_id": "adv_32",
+    "prompt": "Is this valid email: test@example..com?"
+  },
+  {
+    "task_id": "adv_33",
+    "prompt": "reverse hello, the result should be olleh"
+  },
+  {
+    "task_id": "adv_34",
+    "prompt": "How many times does and appear in and and and?"
+  },
+  {
+    "task_id": "adv_35",
+    "prompt": "What is larger: 50 percent of 100 or 25 percent of 250?"
+  },
+  {
+    "task_id": "adv_36",
+    "prompt": "When I said 2+2 I meant concatenation not addition"
+  },
+  {
+    "task_id": "adv_37",
+    "prompt": "0 divided by 5"
+  },
+  {
+    "task_id": "adv_38",
+    "prompt": "5 divided by 0"
+  },
+  {
+    "task_id": "adv_39",
+    "prompt": "What is the capital of Antarctica?"
+  },
+  {
+    "task_id": "adv_40",
+    "prompt": "Extract the second email from a@b.com c@d.org e@f.net"
+  },
+  {
+    "task_id": "adv_41",
+    "prompt": "What is 0xF + 0x1 in decimal?"
+  },
+  {
+    "task_id": "adv_42",
+    "prompt": "Convert 1000000 bytes to megabytes"
+  },
+  {
+    "task_id": "adv_43",
+    "prompt": "Is the quick brown fox a palindrome? Also, how many words in it?"
+  },
+  {
+    "task_id": "adv_44",
+    "prompt": "Write a Fibonacci function that handles n=0 and n=1 correctly"
+  },
+  {
+    "task_id": "adv_45",
+    "prompt": "Calculate: (15 * 3) + (20 / 4) - 7"
+  },
+  {
+    "task_id": "adv_46",
+    "prompt": "True or false: 3+3=6 AND 4+4=9"
+  },
+  {
+    "task_id": "adv_47",
+    "prompt": "What language is Bonjour comment allez-vous?"
+  },
+  {
+    "task_id": "adv_48",
+    "prompt": "Extract IP addresses from server logs: 192.168.1.1 error, 10.0.0.5 timeout"
+  },
+  {
+    "task_id": "adv_49",
+    "prompt": "If a train travels 60 miles per hour for 2.5 hours, how far did it go?"
+  },
+  {
+    "task_id": "adv_50",
+    "prompt": "What is the difference between: 15 percent of 80 and 80 percent of 15?"
+  }
+]
