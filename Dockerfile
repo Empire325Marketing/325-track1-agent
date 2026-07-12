@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.11-slim
 
 LABEL org.opencontainers.image.title="325 Track 1 Agent"
 LABEL org.opencontainers.image.description="Hybrid Token-Efficient Routing Agent — AMD Developer Hackathon Act II"
@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV FIREWORKS_BASE_URL=https://api.fireworks.ai/inference/v1/chat/completions
 ENV ALLOWED_MODELS=accounts/fireworks/models/llama-v3p1-405b-instruct
 
-RUN adduser -D -h /app agent
+RUN useradd -m -d /app agent
 
 WORKDIR /app
 COPY agent.py .
