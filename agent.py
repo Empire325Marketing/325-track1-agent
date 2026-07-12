@@ -876,11 +876,42 @@ def main():
             }, f, indent=2)
 
 if __name__ == "__main__":
+    # Server mode: AMD scorer may communicate via HTTP
+    if os.environ.get("SERVER_MODE") or os.environ.get("PORT"):
+        from http.server import HTTPServer, BaseHTTPRequestHandler
+        port = int(os.environ.get("PORT", 8000))
+        
+        class Handler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                if self.path == "/api/solve":
+                    length = int(self.headers.get("Content-Length", 0))
+                    body = json.loads(self.rfile.read(length))
+                    prompt = body.get("prompt", "")
+                    result = process_task({"task_id": "0", "prompt": prompt})
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"answer": result["answer"]}).encode())
+                else:
+                    self.send_response(404)
+                    self.end_headers()
+            def do_GET(self):
+                if self.path == "/health":
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(b'{"status":"ok"}')
+                else:
+                    self.send_response(404)
+                    self.end_headers()
+            def log_message(self, *args): pass
+        
+        server = HTTPServer(("0.0.0.0", port), Handler)
+        server.serve_forever()
+    
+    # File mode: read from /input/tasks.json, write to /output/results.json
     try:
         main()
     except Exception as e:
-        # Even on error, produce valid output
-        import traceback
         error_msg = f"Error: {str(e)[:200]}"
         output_path = Path("/output/results.json")
         if not output_path.parent.exists():
