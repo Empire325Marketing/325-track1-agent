@@ -783,13 +783,35 @@ def process_task(task: dict) -> dict:
 # ═══════════════════════════════════════════════════════════════
 
 def main():
-    input_path = Path("/input/tasks.json")
-    output_path = Path("/output/results.json")
+    # Try multiple input paths that the AMD scorer might use
+    input_path = None
+    for path in ["/input/tasks.json", "/tmp/input.json", "input.json", "tasks.json"]:
+        if Path(path).exists():
+            input_path = Path(path)
+            break
     
-    # Support local testing
-    if not input_path.exists():
-        input_path = Path("test_tasks.json")
-    if not output_path.parent.exists():
+    # Fallback: try reading from environment variable
+    if input_path is None and os.environ.get("TASKS_JSON"):
+        input_path = Path(os.environ["TASKS_JSON"])
+    
+    # Last resort: use built-in test tasks
+    if input_path is None or not input_path.exists():
+        input_path = Path("/app/test_tasks.json")
+    
+    # Multiple output paths
+    output_path = None
+    for path in ["/output/results.json", "/tmp/results.json", "results.json"]:
+        p = Path(path)
+        try:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.touch()
+            p.unlink()
+            output_path = p
+            break
+        except:
+            continue
+    
+    if output_path is None:
         output_path = Path("results.json")
     
     # Read tasks
