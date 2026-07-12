@@ -876,46 +876,66 @@ def main():
             }, f, indent=2)
 
 if __name__ == "__main__":
-    # Server mode: AMD scorer may communicate via HTTP
-    if os.environ.get("SERVER_MODE") or os.environ.get("PORT"):
-        from http.server import HTTPServer, BaseHTTPRequestHandler
-        port = int(os.environ.get("PORT", 8000))
+    # AMD Scorer HTTP Contract
+    # https://github.com/IamLebin/BudgetBrain/blob/main/server.py
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    
+    port = int(os.environ.get("PORT", 8000))
+    
+    class Handler(BaseHTTPRequestHandler):
+        def _json(self, data, code=200):
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(data).encode())
         
-        class Handler(BaseHTTPRequestHandler):
-            def do_POST(self):
-                if self.path == "/api/solve":
+        def do_GET(self):
+            if self.path == "/health":
+                self._json({"status": "ok"})
+            elif self.path == "/version":
+                self._json({"version": "1.0.0", "track": "amd-1"})
+            else:
+                self.send_response(404)
+                self.end_headers()
+        
+        def do_POST(self):
+            if self.path == "/solve":
+                try:
                     length = int(self.headers.get("Content-Length", 0))
                     body = json.loads(self.rfile.read(length))
-                    prompt = body.get("prompt", "")
-                    result = process_task({"task_id": "0", "prompt": prompt})
-                    self.send_response(200)
-                    self.send_header("Content-Type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(json.dumps({"answer": result["answer"]}).encode())
-                else:
-                    self.send_response(404)
-                    self.end_headers()
-            def do_GET(self):
-                if self.path == "/health":
-                    self.send_response(200)
-                    self.end_headers()
-                    self.wfile.write(b'{"status":"ok"}')
-                else:
-                    self.send_response(404)
-                    self.end_headers()
-            def log_message(self, *args): pass
+                    task_id = body.get("task_id", "unknown")
+                    # Extract prompt from different possible formats
+                    prompt = body.get("prompt") or body.get("input", {}).get("prompt") or body.get("input", {}).get("text") or ""
+                    if isinstance(body.get("input"), str):
+                        prompt = body["input"]
+                    
+                    result = process_task({"task_id": task_id, "prompt": prompt})
+                    
+                    self._json({
+                        "task_id": task_id,
+                        "status": "success",
+                        "output": {"answer": result["answer"]},
+                        "diagnostics": {
+                            "solver_used": result.get("method", "unknown"),
+                            "route": result.get("route", "unknown"),
+                            "tokens_used": result.get("tokens_used", 0)
+                        }
+                    })
+                except Exception as e:
+                    self._json({
+                        "task_id": body.get("task_id", "unknown") if 'body' in dir() else "unknown",
+                        "status": "error",
+                        "output": {"error": str(e)[:200]},
+                        "diagnostics": {"solver_used": "error_handler"}
+                    }, 500)
+            elif self.path == "/shutdown":
+                self.send_response(204)
+                self.end_headers()
+            else:
+                self.send_response(404)
+                self.end_headers()
         
-        server = HTTPServer(("0.0.0.0", port), Handler)
-        server.serve_forever()
+        def log_message(self, *args): pass
     
-    # File mode: read from /input/tasks.json, write to /output/results.json
-    try:
-        main()
-    except Exception as e:
-        error_msg = f"Error: {str(e)[:200]}"
-        output_path = Path("/output/results.json")
-        if not output_path.parent.exists():
-            output_path = Path("results.json")
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, "w") as f:
-            json.dump([{"task_id": "error", "answer": error_msg}], f)
+    server = HTTPServer(("0.0.0.0", port), Handler)
+    server.serve_forever()
