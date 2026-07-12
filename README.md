@@ -3,12 +3,18 @@
 **AMD Developer Hackathon Act II — Track 1**
 Built by Milton J Acosta III — Solo Developer, New York, USA
 
+> **Submission runtime (July 12, 2026):** the scored image is a batch process that reads
+> `/input/tasks.json`, writes `/output/results.json`, and exits. It is not an HTTP server.
+> Earlier percentages below describe routing coverage on self-authored prompts, not verified
+> hidden-leaderboard accuracy. The hardened release and validation evidence are recorded in
+> [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
+
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://python.org)
 [![Docker](https://img.shields.io/badge/docker-linux%2Famd64-blue.svg)](Dockerfile)
 [![CI](https://github.com/Empire325Marketing/325-track1-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Empire325Marketing/325-track1-agent/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![AMD](https://img.shields.io/badge/AMD-MI300X%20%7C%20ROCm-red.svg)](https://amd.com)
-[![Local Rate](https://img.shields.io/badge/local%20solve-93.2%25-brightgreen.svg)]()
+[![Local Routing](https://img.shields.io/badge/current%20verified%20local%20routing-71.6%25-brightgreen.svg)]()
 [![Token Savings](https://img.shields.io/badge/token%20savings-96.8%25-brightgreen.svg)]()
 [![Docker Size](https://img.shields.io/badge/docker%20size-54.5MB-blue.svg)]()
 [![Solo Dev](https://img.shields.io/badge/built%20by-solo%20dev-orange.svg)]()
@@ -19,7 +25,7 @@ Built by Milton J Acosta III — Solo Developer, New York, USA
 
 **96.8% token savings.** On 74 mixed-complexity tasks: 600 tokens used vs 18,500 if all routed to Fireworks. That's not incremental improvement — it's a paradigm shift.
 
-**93.2% local solve rate.** 69 of 74 tasks handled at zero tokens on AMD EPYC CPU. No API call. No GPU. No cloud cost. Sub-millisecond response.
+**71.6% conservative local routing coverage.** 53 of 74 internal prompts currently take a deterministic zero-token path; ambiguous prompts deliberately escalate for accuracy.
 
 **11 solver types** across 6 domains. Three times more than any competitor. Math, percentages, unit conversion, temperature, sentiment, counting, string operations, logic, knowledge facts, named entity extraction, and regex validation.
 

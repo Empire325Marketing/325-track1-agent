@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+__pycache__/
+*.py[cod]
+*.log
+input/
+output/
+results.json
+stats.json
+test_*.py
+test_tasks.json
+adversarial_tasks.json
+*.html
+*.pdf

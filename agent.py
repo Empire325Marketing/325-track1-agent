@@ -876,71 +876,39 @@ def main():
             }, f, indent=2)
 
 if __name__ == "__main__":
-    # AMD Scorer HTTP Contract
-    # https://github.com/IamLebin/BudgetBrain/blob/main/server.py
-    from http.server import HTTPServer, BaseHTTPRequestHandler
-    
-    port = int(os.environ.get("PORT", 8000))
-    
-    class Handler(BaseHTTPRequestHandler):
-        def _json(self, data, code=200):
-            self.send_response(code)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps(data).encode())
+    # DEFAULT: File mode for AMD scoring — reads /input/tasks.json, writes /output/results.json, exits
+    # HTTP server mode: set PORT or SERVER_MODE env var
+    if os.environ.get("PORT") or os.environ.get("SERVER_MODE"):
+        from http.server import HTTPServer, BaseHTTPRequestHandler
+        port = int(os.environ.get("PORT", 8000))
         
-        def do_GET(self):
-            if self.path == "/health":
-                self._json({"status": "ok"})
-            elif self.path == "/version":
-                self._json({"version": "1.0.0", "track": "amd-1"})
-            else:
-                self.send_response(404)
-                self.end_headers()
+        class Handler(BaseHTTPRequestHandler):
+            def _json(self, data, code=200):
+                self.send_response(code); self.send_header("Content-Type", "application/json"); self.end_headers()
+                self.wfile.write(json.dumps(data).encode())
+            def do_GET(self):
+                if self.path == "/health": self._json({"status": "ok"})
+                elif self.path == "/version": self._json({"version": "1.0.0", "track": "amd-1"})
+                else: self.send_response(404); self.end_headers()
+            def do_POST(self):
+                if self.path == "/solve":
+                    body = {}; task_id = "unknown"
+                    try:
+                        length = int(self.headers.get("Content-Length", 0))
+                        body = json.loads(self.rfile.read(length))
+                        task_id = body.get("task_id", "unknown")
+                        prompt = body.get("prompt") or ""
+                        if not prompt and isinstance(body.get("input"), dict):
+                            prompt = body["input"].get("prompt") or body["input"].get("text") or ""
+                        if not prompt and isinstance(body.get("input"), str): prompt = body["input"]
+                        result = process_task({"task_id": task_id, "prompt": prompt})
+                        self._json({"task_id": task_id, "status": "success", "output": {"answer": result["answer"]}, "diagnostics": {"solver_used": result.get("method", "unknown"), "route": result.get("route", "unknown"), "tokens_used": result.get("tokens_used", 0)}})
+                    except Exception as e:
+                        self._json({"task_id": task_id, "status": "error", "output": {"error": str(e)[:200]}, "diagnostics": {"solver_used": "error_handler"}}, 500)
+                elif self.path == "/shutdown": self.send_response(204); self.end_headers()
+                else: self.send_response(404); self.end_headers()
+            def log_message(self, *args): pass
         
-        def do_POST(self):
-            if self.path == "/solve":
-                body = {}
-                task_id = "unknown"
-                try:
-                    length = int(self.headers.get("Content-Length", 0))
-                    body = json.loads(self.rfile.read(length))
-                    task_id = body.get("task_id", "unknown")
-                    
-                    # Extract prompt from different possible formats
-                    prompt = body.get("prompt") or ""
-                    if not prompt and isinstance(body.get("input"), dict):
-                        prompt = body["input"].get("prompt") or body["input"].get("text") or ""
-                    if not prompt and isinstance(body.get("input"), str):
-                        prompt = body["input"]
-                    
-                    result = process_task({"task_id": task_id, "prompt": prompt})
-                    
-                    self._json({
-                        "task_id": task_id,
-                        "status": "success",
-                        "output": {"answer": result["answer"]},
-                        "diagnostics": {
-                            "solver_used": result.get("method", "unknown"),
-                            "route": result.get("route", "unknown"),
-                            "tokens_used": result.get("tokens_used", 0)
-                        }
-                    })
-                except Exception as e:
-                    self._json({
-                        "task_id": task_id,
-                        "status": "error",
-                        "output": {"error": str(e)[:200]},
-                        "diagnostics": {"solver_used": "error_handler"}
-                    }, 500)
-            elif self.path == "/shutdown":
-                self.send_response(204)
-                self.end_headers()
-            else:
-                self.send_response(404)
-                self.end_headers()
-        
-        def log_message(self, *args): pass
-    
-    server = HTTPServer(("0.0.0.0", port), Handler)
-    server.serve_forever()
+        HTTPServer(("0.0.0.0", port), Handler).serve_forever()
+    else:
+        main()
