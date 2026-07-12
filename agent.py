@@ -900,13 +900,18 @@ if __name__ == "__main__":
         
         def do_POST(self):
             if self.path == "/solve":
+                body = {}
+                task_id = "unknown"
                 try:
                     length = int(self.headers.get("Content-Length", 0))
                     body = json.loads(self.rfile.read(length))
                     task_id = body.get("task_id", "unknown")
+                    
                     # Extract prompt from different possible formats
-                    prompt = body.get("prompt") or body.get("input", {}).get("prompt") or body.get("input", {}).get("text") or ""
-                    if isinstance(body.get("input"), str):
+                    prompt = body.get("prompt") or ""
+                    if not prompt and isinstance(body.get("input"), dict):
+                        prompt = body["input"].get("prompt") or body["input"].get("text") or ""
+                    if not prompt and isinstance(body.get("input"), str):
                         prompt = body["input"]
                     
                     result = process_task({"task_id": task_id, "prompt": prompt})
@@ -923,7 +928,7 @@ if __name__ == "__main__":
                     })
                 except Exception as e:
                     self._json({
-                        "task_id": body.get("task_id", "unknown") if 'body' in dir() else "unknown",
+                        "task_id": task_id,
                         "status": "error",
                         "output": {"error": str(e)[:200]},
                         "diagnostics": {"solver_used": "error_handler"}
