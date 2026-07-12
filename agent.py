@@ -835,6 +835,7 @@ def main():
     
     # Stats to file only if explicitly requested (not during scoring)
     if os.environ.get("WRITE_STATS"):
+        pct_local = round(local_count / len(tasks) * 100, 1) if tasks else 0
         stats_path = Path("/output/stats.json")
         if not stats_path.parent.exists():
             stats_path = Path("stats.json")
@@ -853,4 +854,15 @@ def main():
             }, f, indent=2)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        # Even on error, produce valid output
+        import traceback
+        error_msg = f"Error: {str(e)[:200]}"
+        output_path = Path("/output/results.json")
+        if not output_path.parent.exists():
+            output_path = Path("results.json")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, "w") as f:
+            json.dump([{"task_id": "error", "answer": error_msg}], f)
