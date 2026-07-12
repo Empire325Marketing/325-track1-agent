@@ -787,37 +787,29 @@ def main():
     tokens_saved = all_fireworks_estimate - total_tokens
     savings_pct = round(tokens_saved / all_fireworks_estimate * 100, 1) if all_fireworks_estimate > 0 else 0
     
-    # Write results
+    # Write results — only this file, no stderr, no extra output
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f)
     
-    # Stats to stderr (won't break JSON output)
-    pct_local = round(local_count / len(tasks) * 100, 1) if tasks else 0
-    print(f"325 Track 1 Agent — Complete", file=sys.stderr)
-    print(f"  Tasks: {len(tasks)} | Local: {local_count} ({pct_local}%) | Fireworks: {len(tasks)-local_count}", file=sys.stderr)
-    print(f"  Tokens: {total_tokens} used | Est. {all_fireworks_estimate} if all-Fireworks | Saved: {tokens_saved} ({savings_pct}%)", file=sys.stderr)
-    print(f"  Time: {round(total_time,1)}ms | Avg: {round(total_time/len(tasks),1)}ms/task", file=sys.stderr)
-    if simulated_count > 0:
-        print(f"  Note: {simulated_count} tasks simulated. Set FIREWORKS_API_KEY for AMD MI300X inference.", file=sys.stderr)
-    
-    # Write stats
-    stats_path = Path("/output/stats.json")
-    if not stats_path.parent.exists():
-        stats_path = Path("stats.json")
-    with open(stats_path, "w") as f:
-        json.dump({
-            "total_tasks": len(tasks),
-            "local_solved": local_count,
-            "local_pct": pct_local,
-            "total_tokens_used": total_tokens,
-            "all_fireworks_estimate": all_fireworks_estimate,
-            "tokens_saved": tokens_saved,
-            "savings_pct": savings_pct,
-            "total_time_ms": round(total_time, 1),
-            "avg_time_ms": round(total_time/len(tasks), 1) if tasks else 0,
-            "simulated_tasks": simulated_count,
-        }, f, indent=2)
+    # Stats to file only if explicitly requested (not during scoring)
+    if os.environ.get("WRITE_STATS"):
+        stats_path = Path("/output/stats.json")
+        if not stats_path.parent.exists():
+            stats_path = Path("stats.json")
+        with open(stats_path, "w") as f:
+            json.dump({
+                "total_tasks": len(tasks),
+                "local_solved": local_count,
+                "local_pct": pct_local,
+                "total_tokens_used": total_tokens,
+                "all_fireworks_estimate": all_fireworks_estimate,
+                "tokens_saved": tokens_saved,
+                "savings_pct": savings_pct,
+                "total_time_ms": round(total_time, 1),
+                "avg_time_ms": round(total_time/len(tasks), 1) if tasks else 0,
+                "simulated_tasks": simulated_count,
+            }, f, indent=2)
 
 if __name__ == "__main__":
     main()
