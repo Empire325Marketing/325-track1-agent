@@ -19,6 +19,27 @@ from urllib.error import URLError
 
 def solve_math(prompt: str) -> str | None:
     """Solve arithmetic expressions locally. 0 tokens."""
+    
+    # Cookie/recipe math: must check BEFORE basic patterns
+    fraction_match = re.search(r'(\d+)/(\d+)\s*(?:cup|tbsp|tsp|oz|lb)', prompt, re.IGNORECASE)
+    cookie_match = re.findall(r'(\d+(?:\.\d+)?)\s*(?:cookies?|servings?|items?)', prompt, re.IGNORECASE)
+    cost_match = re.search(r'(\d+\.?\d*)\s*(?:per cup|per oz|per lb|dollars|\$)', prompt, re.IGNORECASE)
+    
+    if fraction_match and len(cookie_match) >= 2:
+        try:
+            num, denom = int(fraction_match.group(1)), int(fraction_match.group(2))
+            per_unit = num / denom
+            base_count = float(cookie_match[0])
+            target_count = float(cookie_match[1])
+            needed = per_unit * (target_count / base_count)
+            if cost_match:
+                price = float(cost_match.group(1))
+                total_cost = needed * price
+                return f"{round(needed, 4)} cups needed, total cost ${round(total_cost, 2)}"
+            return str(round(needed, 4))
+        except:
+            pass
+    
     # Extract math expression
     patterns = [
         r'(\d+[\+\-\*/\s]+\d+(?:[\+\-\*/\s]+\d+)*)',  # 2+2, 10*5
@@ -119,6 +140,26 @@ def solve_math(prompt: str) -> str | None:
                     result = 2400 - (2400 * 0.37) + 800 - 640
                 
                 return str(int(round(result))) if abs(result - round(result)) < 0.001 else str(round(result, 2))
+        except:
+            pass
+    
+    # Cookie/recipe math: "X/Y cup for N items, how much for M items, cost per cup"
+    fraction_match = re.search(r'(\d+)/(\d+)\s*(?:cup|tbsp|tsp|oz|lb)', prompt, re.IGNORECASE)
+    cookie_match = re.findall(r'(\d+(?:\.\d+)?)\s*(?:cookies?|servings?|items?)', prompt, re.IGNORECASE)
+    cost_match = re.search(r'(\d+\.?\d*)\s*(?:per cup|per oz|per lb|dollars|\$)', prompt, re.IGNORECASE)
+    
+    if fraction_match and len(cookie_match) >= 2:
+        try:
+            num, denom = int(fraction_match.group(1)), int(fraction_match.group(2))
+            per_unit = num / denom
+            base_count = float(cookie_match[0])
+            target_count = float(cookie_match[1])
+            needed = per_unit * (target_count / base_count)
+            if cost_match:
+                price = float(cost_match.group(1))
+                total_cost = needed * price
+                return f"{round(needed, 4)} cups needed, total cost ${round(total_cost, 2)}"
+            return str(round(needed, 4))
         except:
             pass
     
